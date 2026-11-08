@@ -1,60 +1,60 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.models.producto import Product
-from app.models.categoria import Categoria as Category
+from app.models.producto import Producto
+from app.models.categoria import Categoria
 
 
-def create_product(db: Session, data):
+def crear_producto(db: Session, datos):
 
-    category = db.query(Category).filter(
-        Category.id == data.category_id
+    categoria = db.query(Categoria).filter(
+        Categoria.id == datos.categoria_id
     ).first()
 
-    if not category:
+    if not categoria:
         raise HTTPException(
             status_code=404,
             detail="La categoría no existe"
         )
 
-    product = Product(**data.model_dump())
+    producto = Producto(**datos.model_dump())
 
-    db.add(product)
+    db.add(producto)
     db.commit()
-    db.refresh(product)
+    db.refresh(producto)
 
-    return product
+    return producto
 
 
-def update_product(db: Session, product_id: int, data):
+def actualizar_producto(db: Session, producto_id: int, datos):
 
-    product = db.query(Product).filter(
-        Product.id == product_id
+    producto = db.query(Producto).filter(
+        Producto.id == producto_id
     ).first()
 
-    if not product:
+    if not producto:
         raise HTTPException(
             status_code=404,
             detail="Producto no encontrado"
         )
 
-    changes = data.model_dump(exclude_unset=True)
+    changes = datos.model_dump(exclude_unset=True)
 
-    if "category_id" in changes:
-        category = db.query(Category).filter(
-            Category.id == changes["category_id"]
+    if "categoria_id" in changes:
+        categoria = db.query(Categoria).filter(
+            Categoria.id == changes["categoria_id"]
         ).first()
 
-        if not category:
+        if not categoria:
             raise HTTPException(
                 status_code=404,
                 detail="La categoría no existe"
             )
 
     for key, value in changes.items():
-        setattr(product, key, value)
+        setattr(producto, key, value)
 
     db.commit()
-    db.refresh(product)
+    db.refresh(producto)
 
-    return product
+    return producto

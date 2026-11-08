@@ -9,7 +9,7 @@ class PartidaCompraCrear(BaseModel):
 
 class CompraCrear(BaseModel):
     proveedor_id: int
-    partidas: list[PartidaCompraCrear] = Field(min_length=1)
+    items: list[PartidaCompraCrear] = Field(min_length=1)
 
 
 class PartidaCompraRespuesta(BaseModel):
@@ -26,6 +26,6 @@ class CompraRespuesta(BaseModel):
     id: int
     proveedor_id: int
     total: float
-    partidas: list[PartidaCompraRespuesta]
+    items: list[PartidaCompraRespuesta]
 
     model_config = ConfigDict(from_attributes=True)

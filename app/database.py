@@ -8,7 +8,7 @@ class Configuracion(BaseSettings):
 
     CLAVESECRETA: str = "cambia_esta_clave"
     ALGORITMO: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    MINUTOS_EXPIRACION_TOKEN: int = 60
 
 
     class Config:
@@ -37,10 +37,13 @@ class Base(DeclarativeBase):
     pass
 
 
-def obtener_db():
+def obtener_bd():
     db = SessionLocal()
 
     try:
         yield db
     finally:
         db.close()
+
+
+obtener_db = obtener_bd

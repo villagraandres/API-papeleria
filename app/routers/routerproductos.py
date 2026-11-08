@@ -8,10 +8,7 @@ from app.schemas.productos import (
     ProductoActualizar,
     ProductoRespuesta
 )
-from app.services.product_service import (
-    crear_producto,
-    actualizar_producto
-)
+from app.services.product_service import crear_producto, actualizar_producto
 from app.security import obtener_usuario_actual, requerir_admin
 
 

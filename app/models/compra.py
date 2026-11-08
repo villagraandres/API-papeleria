@@ -4,8 +4,8 @@ from sqlalchemy.sql import func
 from app.database import Base
 
 
-class Purchase(Base):
-    __tablename__ = "Compras"
+class Compra(Base):
+    __tablename__ = "compras"
 
     id = Column(Integer, primary_key=True, index=True)
     proveedor_id = Column(Integer, ForeignKey("proveedores.id"))
@@ -13,20 +13,20 @@ class Purchase(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     items = relationship(
-        "PurchaseItem",
-        back_populates="Compras",
+        "PartidaCompra",
+        back_populates="compra",
         cascade="all, delete-orphan"
     )
 
 
-class PurchaseItem(Base):
-    __tablename__ = "Compras_Items"
+class PartidaCompra(Base):
+    __tablename__ = "partidas_compra"
 
     id = Column(Integer, primary_key=True, index=True)
-    compra_id = Column(Integer, ForeignKey("Compras.id"))
-    producto_id = Column(Integer, ForeignKey("Productos.id"))
+    compra_id = Column(Integer, ForeignKey("compras.id"))
+    producto_id = Column(Integer, ForeignKey("productos.id"))
     cantidad = Column(Integer, nullable=False)
     costo_unitario = Column(Float, nullable=False)
     subtotal = Column(Float, nullable=False)
 
-    Compras = relationship("Compras", back_populates="items")
+    compra = relationship("Compra", back_populates="items")

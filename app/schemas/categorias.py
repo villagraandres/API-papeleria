@@ -1,12 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class CategoryCreate(BaseModel):
+class CategoriaCrear(BaseModel):
     nombre: str
     descripcion: str | None = None
 
 
-class CategoryResponse(BaseModel):
+class CategoriaRespuesta(BaseModel):
     id: int
     nombre: str
     descripcion: str | None

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import obtener_bd
 from app.models.compra import Compra
 from app.schemas.compras import CompraCrear, CompraRespuesta
-from app.services.product_service import crear_compra
+from app.services.serviciocompra import crear_compra
 from app.security import requerir_admin
 
 

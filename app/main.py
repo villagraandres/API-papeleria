@@ -1,20 +1,20 @@
 from fastapi import FastAPI
 
-from app.database import engine, Base
+from app.database import motor, Base
 from app import models
 
 from app.routers import (
-    auth,
+    routerautenticacion,
     routerproductos,
     routercategorias,
     routerclientes,
-    routerproveedores,
+    routerproveedor,
     routercompras,
     routerventa
 )
 
 
-Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=motor)
 
 
 app = FastAPI(
@@ -25,13 +25,13 @@ app = FastAPI(
 
 
 
-app.include_router(auth.router)
-app.include_router(routerproductos.router)
-app.include_router(routercategorias.router)
-app.include_router(routerclientes.router)
-app.include_router(routerproveedores.router)
-app.include_router(routerventa.router)
-app.include_router(routercompras.router)
+app.include_router(routerautenticacion.routerautenticacion)
+app.include_router(routerproductos.routerproducto)
+app.include_router(routercategorias.routercategoria)
+app.include_router(routerclientes.routercliente)
+app.include_router(routerproveedor.routerproveedor)
+app.include_router(routerventa.routerventa)
+app.include_router(routercompras.routercompra)
 
 
 @app.get("/")

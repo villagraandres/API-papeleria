@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.models.compra import Compra, ItemCompra
+from app.models.compra import Compra, PartidaCompra
 from app.models.producto import Producto
 from app.models.proveedor import Proveedor
 
@@ -43,7 +43,7 @@ def crear_compra(db: Session, datos):
 
             subtotal = item.cantidad * item.costo_unitario
 
-            item_compra = ItemCompra(
+            item_compra = PartidaCompra(
                 compra_id=compra.id,
                 producto_id=producto.id,
                 cantidad=item.cantidad,

@@ -8,7 +8,7 @@ class PartidaVentaCrear(BaseModel):
 
 class VentaCrear(BaseModel):
     cliente_id: int | None = None
-    partidas: list[PartidaVentaCrear] = Field(min_length=1)
+    items: list[PartidaVentaCrear] = Field(min_length=1)
 
 
 class PartidaVentaRespuesta(BaseModel):
@@ -25,6 +25,6 @@ class VentaRespuesta(BaseModel):
     id: int
     cliente_id: int | None
     total: float
-    partidas: list[PartidaVentaRespuesta]
+    items: list[PartidaVentaRespuesta]
 
     model_config = ConfigDict(from_attributes=True)

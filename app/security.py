@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from app.database import configuracion, obtener_db
+from app.database import configuracion, obtener_bd
 from app.models.usuario import Usuario
 
 
@@ -14,8 +14,9 @@ contexto_pwd = CryptContext(
     deprecated="auto"
 )
 
-esquema_oauth2 = OAuth2PasswordBearer(tokenUrl="/auth/login")
-
+esquema_oauth2 = OAuth2PasswordBearer(
+    tokenUrl="/autenticacion/iniciar-sesion"
+)
 
 def encriptar_contrasena(contrasena: str):
     return contexto_pwd.hash(contrasena)
@@ -43,7 +44,7 @@ def crear_token_acceso(datos: dict):
 
 def obtener_usuario_actual(
     token: str = Depends(esquema_oauth2),
-    db: Session = Depends(obtener_db)
+    db: Session = Depends(obtener_bd)
 ):
     excepcion_credenciales = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,3 +83,8 @@ def requerir_admin(usuario_actual: Usuario = Depends(obtener_usuario_actual)):
         )
 
     return usuario_actual
+
+
+hash_password = encriptar_contrasena
+verify_password = verificar_contrasena
+create_access_token = crear_token_acceso
