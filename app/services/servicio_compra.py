@@ -6,6 +6,10 @@ from app.models.producto import Producto
 from app.models.proveedor import Proveedor
 
 
+def listar_compras(db: Session) -> list[Compra]:
+    return db.query(Compra).all()
+
+
 def crear_compra(db: Session, datos):
 
     try:

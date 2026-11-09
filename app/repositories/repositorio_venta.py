@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session
 from app.models.venta import Venta
 
 
-def get_all_sales(db: Session):
+def listar_ventas(db: Session):
     return db.query(Venta).all()
 
 
-def get_sale(db: Session, sale_id: int):
+def obtener_venta(db: Session, venta_id: int):
     return db.query(Venta).filter(
-        Venta.id == sale_id
+        Venta.id == venta_id
     ).first()

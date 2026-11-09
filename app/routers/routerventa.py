@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import obtener_bd
-from app.models.venta import Venta
 from app.schemas.infoventas import VentaCrear, VentaRespuesta
-from app.services.sale_service import crear_venta
+from app.services.servicio_venta import (
+    listar_ventas as listar_ventas_servicio,
+    obtener_venta as obtener_venta_servicio,
+    crear_venta as crear_venta_servicio,
+)
 from app.security import obtener_usuario_actual
 
 
@@ -16,7 +19,7 @@ def listar_ventas(
     db: Session = Depends(obtener_bd),
     usuario=Depends(obtener_usuario_actual)
 ):
-    return db.query(Venta).all()
+    return listar_ventas_servicio(db)
 
 
 @routerventa.get("/{venta_id}", response_model=VentaRespuesta)
@@ -25,14 +28,7 @@ def obtener_venta(
     db: Session = Depends(obtener_bd),
     usuario=Depends(obtener_usuario_actual)
 ):
-    venta = db.query(Venta).filter(
-        Venta.id == venta_id
-    ).first()
-
-    if not venta:
-        raise HTTPException(404, "Venta no encontrada")
-
-    return venta
+    return obtener_venta_servicio(db, venta_id)
 
 
 @routerventa.post("/", response_model=VentaRespuesta, status_code=201)
@@ -41,4 +37,4 @@ def registrar_venta(
     db: Session = Depends(obtener_bd),
     usuario=Depends(obtener_usuario_actual)
 ):
-    return crear_venta(db, datos)
+    return crear_venta_servicio(db, datos)

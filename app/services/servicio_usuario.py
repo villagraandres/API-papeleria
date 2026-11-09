@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from app.models.usuario import Usuario
-from app.repositories.user_repository import obtener_usuario_por_correo
+from app.repositories.repositorio_usuario import obtener_usuario_por_correo
 from app.security import (
     encriptar_contrasena,
     verificar_contrasena,

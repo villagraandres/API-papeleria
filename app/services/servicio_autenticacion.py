@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 
 from app.models.usuario import Usuario
-from app.repositories.user_repository import obtener_usuario_por_correo
+from app.repositories.repositorio_usuario import obtener_usuario_por_correo
 from app.security import (
     encriptar_contrasena,
     verificar_contrasena,
@@ -38,6 +38,11 @@ def registrar_usuario(db: Session, datos):
     db.refresh(usuario)
 
     return usuario
+
+
+def registrar_administrador(db: Session, datos):
+    datos_admin = datos.model_copy(update={"rol": "admin"})
+    return registrar_usuario(db, datos_admin)
 
 
 def iniciar_sesion(db: Session, datos):

@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import obtener_bd
-from app.models.categoria import Categoria
 from app.schemas.categorias import CategoriaCrear, CategoriaRespuesta
 from app.security import requerir_admin
+from app.services.servicio_categoria import (
+    listar_categorias as listar_categorias_servicio,
+    crear_categoria as crear_categoria_servicio,
+    eliminar_categoria as eliminar_categoria_servicio,
+)
 
 
 routercategoria = APIRouter(prefix="/categorias", tags=["Categorías"])
@@ -12,7 +16,7 @@ routercategoria = APIRouter(prefix="/categorias", tags=["Categorías"])
 
 @routercategoria.get("/", response_model=list[CategoriaRespuesta])
 def listar_categorias(db: Session = Depends(obtener_bd)):
-    return db.query(Categoria).all()
+    return listar_categorias_servicio(db)
 
 
 @routercategoria.post("/", response_model=CategoriaRespuesta, status_code=201)
@@ -21,20 +25,7 @@ def crear_categoria(
     db: Session = Depends(obtener_bd),
     usuario=Depends(requerir_admin)
 ):
-    existente = db.query(Categoria).filter(
-        Categoria.nombre == datos.nombre
-    ).first()
-
-    if existente:
-        raise HTTPException(400, "La categoría ya existe")
-
-    categoria = Categoria(**datos.model_dump())
-
-    db.add(categoria)
-    db.commit()
-    db.refresh(categoria)
-
-    return categoria
+    return crear_categoria_servicio(db, datos)
 
 
 @routercategoria.delete("/{categoria_id}", status_code=204)
@@ -43,17 +34,4 @@ def eliminar_categoria(
     db: Session = Depends(obtener_bd),
     usuario=Depends(requerir_admin)
 ):
-    categoria = db.query(Categoria).filter(
-        Categoria.id == categoria_id
-    ).first()
-
-    if not categoria:
-        raise HTTPException(404, "Categoría no encontrada")
-
-    if db.query(__import__(
-        "app.models.producto", fromlist=["Producto"]
-    ).Producto).filter_by(categoria_id=categoria_id).first():
-        raise HTTPException(409, "La categoría tiene productos asociados")
-
-    db.delete(categoria)
-    db.commit()
+    eliminar_categoria_servicio(db, categoria_id)

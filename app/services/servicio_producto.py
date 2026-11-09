@@ -3,9 +3,26 @@ from sqlalchemy.orm import Session
 
 from app.models.producto import Producto
 from app.models.categoria import Categoria
+from app.repositories import repositorio_base
+from app.schemas.productos import ProductoCrear, ProductoActualizar
 
 
-def crear_producto(db: Session, datos):
+def listar_productos(db: Session) -> list[Producto]:
+    return db.query(Producto).all()
+
+
+def obtener_producto(db: Session, producto_id: int) -> Producto:
+    producto = db.query(Producto).filter(
+        Producto.id == producto_id
+    ).first()
+
+    if not producto:
+        raise HTTPException(404, "Producto no encontrado")
+
+    return producto
+
+
+def crear_producto(db: Session, datos: ProductoCrear) -> Producto:
 
     categoria = db.query(Categoria).filter(
         Categoria.id == datos.categoria_id
@@ -19,14 +36,14 @@ def crear_producto(db: Session, datos):
 
     producto = Producto(**datos.model_dump())
 
-    db.add(producto)
-    db.commit()
-    db.refresh(producto)
-
-    return producto
+    return repositorio_base.guardar(db, producto)
 
 
-def actualizar_producto(db: Session, producto_id: int, datos):
+def actualizar_producto(
+    db: Session,
+    producto_id: int,
+    datos: ProductoActualizar
+) -> Producto:
 
     producto = db.query(Producto).filter(
         Producto.id == producto_id
@@ -58,3 +75,9 @@ def actualizar_producto(db: Session, producto_id: int, datos):
     db.refresh(producto)
 
     return producto
+
+
+def eliminar_producto(db: Session, producto_id: int) -> None:
+    producto = obtener_producto(db, producto_id)
+    db.delete(producto)
+    db.commit()

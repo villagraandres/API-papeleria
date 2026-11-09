@@ -6,6 +6,21 @@ from app.models.producto import Producto
 from app.models.cliente import Cliente
 
 
+def listar_ventas(db: Session) -> list[Venta]:
+    return db.query(Venta).all()
+
+
+def obtener_venta(db: Session, venta_id: int) -> Venta:
+    venta = db.query(Venta).filter(
+        Venta.id == venta_id
+    ).first()
+
+    if not venta:
+        raise HTTPException(404, "Venta no encontrada")
+
+    return venta
+
+
 def crear_venta(db: Session, datos):
 
     try:
