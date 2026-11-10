@@ -15,7 +15,7 @@ contexto_pwd = CryptContext(
 )
 
 esquema_oauth2 = OAuth2PasswordBearer(
-    tokenUrl="/autenticacion/iniciar-sesion"
+    tokenUrl="/autenticacion/token"
 )
 
 def encriptar_contrasena(contrasena: str):

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.database import obtener_bd
@@ -36,6 +37,18 @@ def registro_admin(datos: UsuarioCrear, db: Session = Depends(obtener_bd)):
 @routerautenticacion.post("/iniciar-sesion")
 def inicio_sesion(datos: UsuarioLogin, db: Session = Depends(obtener_bd)):
 
+    return iniciar_sesion(db, datos)
+
+
+@routerautenticacion.post("/token")
+def obtener_token(
+    formulario: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(obtener_bd),
+):
+    datos = UsuarioLogin(
+        correo=formulario.username,
+        contrasena=formulario.password,
+    )
     return iniciar_sesion(db, datos)
 
 
