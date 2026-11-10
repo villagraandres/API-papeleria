@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime
+from sqlalchemy import Boolean, Column, Integer, Float, ForeignKey, DateTime, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -11,6 +11,8 @@ class Venta(Base):
     cliente_id = Column(Integer, ForeignKey("clientes.id"))
     total = Column(Float, nullable=False, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    iva = Column(Float, nullable=False, default=0)
+    estado = Column(String(20), nullable=False, default="activa")
 
     items = relationship(
         "PartidaVenta",

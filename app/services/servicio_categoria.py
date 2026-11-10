@@ -8,7 +8,7 @@ from app.schemas.categorias import CategoriaCrear
 
 
 def listar_categorias(db: Session) -> list[Categoria]:
-    return db.query(Categoria).all()
+    return db.query(Categoria).filter(Categoria.activo.is_(True)).all()
 
 
 def crear_categoria(db: Session, datos: CategoriaCrear) -> Categoria:
@@ -20,10 +20,11 @@ def crear_categoria(db: Session, datos: CategoriaCrear) -> Categoria:
         raise HTTPException(400, "La categoría ya existe")
 
     categoria = Categoria(**datos.model_dump())
+    categoria.activo = True
     return repositorio_base.guardar(db, categoria)
 
 
-def eliminar_categoria(db: Session, categoria_id: int) -> None:
+def desactivar_categoria(db: Session, categoria_id: int) -> None:
     categoria = db.query(Categoria).filter(
         Categoria.id == categoria_id
     ).first()
@@ -31,12 +32,13 @@ def eliminar_categoria(db: Session, categoria_id: int) -> None:
     if not categoria:
         raise HTTPException(404, "Categoría no encontrada")
 
-    producto_asociado = db.query(Producto).filter(
-        Producto.categoria_id == categoria_id
-    ).first()
+    categoria.activo = False
+    db.commit()
 
-    if producto_asociado:
-        raise HTTPException(409, "La categoría tiene productos asociados")
 
-    db.delete(categoria)
+def activar_categoria(db: Session, categoria_id: int) -> None:
+    categoria = db.query(Categoria).filter(Categoria.id == categoria_id).first()
+    if not categoria:
+        raise HTTPException(404, "Categoría no encontrada")
+    categoria.activo = True
     db.commit()

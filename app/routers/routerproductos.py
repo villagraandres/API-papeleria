@@ -12,7 +12,8 @@ from app.services.servicio_producto import (
     obtener_producto as obtener_producto_servicio,
     crear_producto as crear_producto_servicio,
     actualizar_producto as actualizar_producto_servicio,
-    eliminar_producto as eliminar_producto_servicio,
+    desactivar_producto as desactivar_producto_servicio,
+    activar_producto as activar_producto_servicio,
 )
 from app.security import obtener_usuario_actual, requerir_admin
 
@@ -51,11 +52,20 @@ def editar_producto(
     return actualizar_producto_servicio(db, producto_id, datos)
 
 
-@routerproducto.delete("/{producto_id}", status_code=204)
-def eliminar_producto(
+@routerproducto.patch("/{producto_id}/desactivar", status_code=204)
+def desactivar_producto(
     producto_id: int,
     db: Session = Depends(obtener_bd),
     usuario=Depends(requerir_admin)
 ):
 
-    eliminar_producto_servicio(db, producto_id)
+    desactivar_producto_servicio(db, producto_id)
+
+
+@routerproducto.patch("/{producto_id}/activar", status_code=204)
+def activar_producto(
+    producto_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario=Depends(requerir_admin),
+):
+    activar_producto_servicio(db, producto_id)

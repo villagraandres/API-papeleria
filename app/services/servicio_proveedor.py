@@ -7,15 +7,16 @@ from app.schemas.infoproveedor import ProveedorCrear
 
 
 def listar_proveedores(db: Session) -> list[Proveedor]:
-    return db.query(Proveedor).all()
+    return db.query(Proveedor).filter(Proveedor.activo.is_(True)).all()
 
 
 def crear_proveedor(db: Session, datos: ProveedorCrear) -> Proveedor:
     proveedor = Proveedor(**datos.model_dump())
+    proveedor.activo = True
     return repositorio_base.guardar(db, proveedor)
 
 
-def eliminar_proveedor(db: Session, proveedor_id: int) -> None:
+def desactivar_proveedor(db: Session, proveedor_id: int) -> None:
     proveedor = db.query(Proveedor).filter(
         Proveedor.id == proveedor_id
     ).first()
@@ -23,5 +24,13 @@ def eliminar_proveedor(db: Session, proveedor_id: int) -> None:
     if not proveedor:
         raise HTTPException(404, "Proveedor no encontrado")
 
-    db.delete(proveedor)
+    proveedor.activo = False
+    db.commit()
+
+
+def activar_proveedor(db: Session, proveedor_id: int) -> None:
+    proveedor = db.query(Proveedor).filter(Proveedor.id == proveedor_id).first()
+    if not proveedor:
+        raise HTTPException(404, "Proveedor no encontrado")
+    proveedor.activo = True
     db.commit()

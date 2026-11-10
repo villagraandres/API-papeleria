@@ -10,5 +10,6 @@ class CategoriaRespuesta(BaseModel):
     id: int
     nombre: str
     descripcion: str | None
+    activo: bool
 
     model_config = ConfigDict(from_attributes=True)

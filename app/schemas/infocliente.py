@@ -12,5 +12,6 @@ class ClienteRespuesta(BaseModel):
     nombre: str
     correo: str | None
     telefono: str | None
+    activo: bool
 
     model_config = ConfigDict(from_attributes=True)

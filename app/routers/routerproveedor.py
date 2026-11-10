@@ -7,7 +7,8 @@ from app.security import requerir_admin
 from app.services.servicio_proveedor import (
     listar_proveedores as listar_proveedores_servicio,
     crear_proveedor as crear_proveedor_servicio,
-    eliminar_proveedor as eliminar_proveedor_servicio,
+    desactivar_proveedor as desactivar_proveedor_servicio,
+    activar_proveedor as activar_proveedor_servicio,
 )
 
 
@@ -28,10 +29,19 @@ def crear_proveedor(
     return crear_proveedor_servicio(db, datos)
 
 
-@routerproveedor.delete("/{proveedor_id}", status_code=204)
-def eliminar_proveedor(
+@routerproveedor.patch("/{proveedor_id}/desactivar", status_code=204)
+def desactivar_proveedor(
     proveedor_id: int,
     db: Session = Depends(obtener_bd),
     usuario=Depends(requerir_admin)
 ):
-    eliminar_proveedor_servicio(db, proveedor_id)
+    desactivar_proveedor_servicio(db, proveedor_id)
+
+
+@routerproveedor.patch("/{proveedor_id}/activar", status_code=204)
+def activar_proveedor(
+    proveedor_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario=Depends(requerir_admin),
+):
+    activar_proveedor_servicio(db, proveedor_id)

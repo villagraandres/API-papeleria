@@ -8,6 +8,8 @@ from app.services.servicio_autenticacion import (
     registrar_usuario,
     registrar_administrador,
     iniciar_sesion,
+    listar_usuarios,
+    cambiar_estado_usuario,
 )
 from app.security import obtener_usuario_actual, requerir_admin
 from app.models.usuario import Usuario
@@ -57,3 +59,36 @@ def obtener_perfil(
     usuario_actual: Usuario = Depends(obtener_usuario_actual)
 ):
     return usuario_actual
+
+
+@routerautenticacion.get(
+    "/usuarios",
+    response_model=list[UsuarioRespuesta],
+    dependencies=[Depends(requerir_admin)],
+)
+def obtener_usuarios(db: Session = Depends(obtener_bd)):
+    return listar_usuarios(db)
+
+
+@routerautenticacion.patch(
+    "/usuarios/{usuario_id}/desactivar",
+    response_model=UsuarioRespuesta,
+)
+def desactivar_usuario(
+    usuario_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario_actual: Usuario = Depends(requerir_admin),
+):
+    return cambiar_estado_usuario(db, usuario_id, False, usuario_actual)
+
+
+@routerautenticacion.patch(
+    "/usuarios/{usuario_id}/activar",
+    response_model=UsuarioRespuesta,
+)
+def activar_usuario(
+    usuario_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario_actual: Usuario = Depends(requerir_admin),
+):
+    return cambiar_estado_usuario(db, usuario_id, True, usuario_actual)

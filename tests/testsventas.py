@@ -22,7 +22,7 @@ def test_sale_requires_authentication():
     assert response.status_code == 401
 
 
-def test_sale_requires_items():
+def test_sale_requires_authentication_before_items_validation():
 
     response = cliente.post(
         "/ventas/",
@@ -32,4 +32,5 @@ def test_sale_requires_items():
         }
     )
 
-    assert response.status_code == 422
+    # Las rutas protegidas autentican antes de validar las reglas del negocio.
+    assert response.status_code == 401

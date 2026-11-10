@@ -28,5 +28,6 @@ class ProductoRespuesta(BaseModel):
     stock: int
     stock_minimo: int
     categoria_id: int
+    activo: bool
 
     model_config = ConfigDict(from_attributes=True)

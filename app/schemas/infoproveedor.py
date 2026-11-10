@@ -14,5 +14,6 @@ class ProveedorRespuesta(BaseModel):
     contacto: str | None
     telefono: str | None
     correo: str | None
+    activo: bool
 
     model_config = ConfigDict(from_attributes=True)

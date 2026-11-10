@@ -18,5 +18,6 @@ class UsuarioRespuesta(BaseModel):
     nombre: str
     correo: EmailStr
     rol: str
+    activo: bool
 
     model_config = ConfigDict(from_attributes=True)

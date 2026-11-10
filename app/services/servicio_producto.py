@@ -8,7 +8,7 @@ from app.schemas.productos import ProductoCrear, ProductoActualizar
 
 
 def listar_productos(db: Session) -> list[Producto]:
-    return db.query(Producto).all()
+    return db.query(Producto).filter(Producto.activo.is_(True)).all()
 
 
 def obtener_producto(db: Session, producto_id: int) -> Producto:
@@ -25,7 +25,8 @@ def obtener_producto(db: Session, producto_id: int) -> Producto:
 def crear_producto(db: Session, datos: ProductoCrear) -> Producto:
 
     categoria = db.query(Categoria).filter(
-        Categoria.id == datos.categoria_id
+        Categoria.id == datos.categoria_id,
+        Categoria.activo.is_(True),
     ).first()
 
     if not categoria:
@@ -35,6 +36,7 @@ def crear_producto(db: Session, datos: ProductoCrear) -> Producto:
         )
 
     producto = Producto(**datos.model_dump())
+    producto.activo = True
 
     return repositorio_base.guardar(db, producto)
 
@@ -59,7 +61,8 @@ def actualizar_producto(
 
     if "categoria_id" in changes:
         categoria = db.query(Categoria).filter(
-            Categoria.id == changes["categoria_id"]
+            Categoria.id == changes["categoria_id"],
+            Categoria.activo.is_(True),
         ).first()
 
         if not categoria:
@@ -77,7 +80,15 @@ def actualizar_producto(
     return producto
 
 
-def eliminar_producto(db: Session, producto_id: int) -> None:
+def desactivar_producto(db: Session, producto_id: int) -> None:
     producto = obtener_producto(db, producto_id)
-    db.delete(producto)
+    producto.activo = False
+    db.commit()
+
+
+def activar_producto(db: Session, producto_id: int) -> None:
+    producto = db.query(Producto).filter(Producto.id == producto_id).first()
+    if not producto:
+        raise HTTPException(404, "Producto no encontrado")
+    producto.activo = True
     db.commit()

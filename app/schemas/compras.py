@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -26,6 +28,9 @@ class CompraRespuesta(BaseModel):
     id: int
     proveedor_id: int
     total: float
+    iva: float
+    estado: str
+    created_at: datetime
     items: list[PartidaCompraRespuesta]
 
     model_config = ConfigDict(from_attributes=True)

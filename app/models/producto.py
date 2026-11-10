@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, Float, ForeignKey
 from app.database import Base
 
 
@@ -17,3 +17,4 @@ class Producto(Base):
         ForeignKey("categorias.id"),
         nullable=False
     )
+    activo = Column(Boolean, default=True, nullable=False)

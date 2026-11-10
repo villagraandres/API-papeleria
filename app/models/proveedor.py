@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from app.database import Base
 
 
@@ -10,3 +10,4 @@ class Proveedor(Base):
     contacto = Column(String(100))
     telefono = Column(String(20))
     correo = Column(String(150))
+    activo = Column(Boolean, default=True, nullable=False)

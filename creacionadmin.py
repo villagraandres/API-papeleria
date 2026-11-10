@@ -11,8 +11,11 @@ try:
     nombre = input("Nombre del administrador: ").strip()
     contrasena = getpass("Contraseña: ")
 
-    if len(contrasena) < 8:
+    longitud = len(contrasena.encode("utf-8"))
+    if longitud < 8:
         raise ValueError("La contraseña debe tener al menos 8 caracteres")
+    if longitud > 72:
+        raise ValueError("La contraseña no puede superar los 72 bytes")
 
     if not nombre or not correo:
         raise ValueError("El nombre y correo son obligatorios")

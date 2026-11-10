@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from app.database import Base
 
 
@@ -9,3 +9,4 @@ class Cliente(Base):
     nombre = Column(String(150), nullable=False)
     correo = Column(String(150), unique=True, nullable=True)
     telefono = Column(String(20), nullable=True)
+    activo = Column(Boolean, default=True, nullable=False)

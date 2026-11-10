@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from app.database import Base
 
 
@@ -10,3 +10,4 @@ class Usuario(Base):
     correo = Column(String(150), unique=True, nullable=False)
     contrasena_encriptada = Column(String(255), nullable=False)
     rol = Column(String(30), default="empleado")
+    activo = Column(Boolean, default=True, nullable=False)

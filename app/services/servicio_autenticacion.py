@@ -20,10 +20,16 @@ def registrar_usuario(db: Session, datos):
             detail="El correo ya está registrado"
         )
 
-    if len(datos.contrasena) < 8:
+    longitud = len(datos.contrasena.encode("utf-8"))
+    if longitud < 8:
         raise HTTPException(
             status_code=400,
             detail="La contraseña debe tener al menos 8 caracteres"
+        )
+    if longitud > 72:
+        raise HTTPException(
+            status_code=400,
+            detail="La contraseña no puede superar los 72 bytes"
         )
 
     usuario = Usuario(
@@ -47,7 +53,10 @@ def registrar_administrador(db: Session, datos):
 
 def iniciar_sesion(db: Session, datos):
 
-    usuario = obtener_usuario_por_correo(db, datos.correo)
+    usuario = db.query(Usuario).filter(
+        Usuario.correo == datos.correo,
+        Usuario.activo.is_(True),
+    ).first()
 
     if not usuario or not verificar_contrasena(
         datos.contrasena,
@@ -64,3 +73,24 @@ def iniciar_sesion(db: Session, datos):
         "access_token": token,
         "token_type": "bearer"
     }
+
+
+def listar_usuarios(db: Session) -> list[Usuario]:
+    return db.query(Usuario).all()
+
+
+def cambiar_estado_usuario(
+    db: Session,
+    usuario_id: int,
+    activo: bool,
+    usuario_actual: Usuario,
+) -> Usuario:
+    usuario_objetivo = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not usuario_objetivo:
+        raise HTTPException(404, "Usuario no encontrado")
+    if not activo and usuario_actual.id == usuario_id:
+        raise HTTPException(403, "No es posible desactivar el usuario actual")
+    usuario_objetivo.activo = activo
+    db.commit()
+    db.refresh(usuario_objetivo)
+    return usuario_objetivo

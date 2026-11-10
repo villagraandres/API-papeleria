@@ -3,11 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.database import obtener_bd
 from app.schemas.infocliente import ClienteCrear, ClienteRespuesta
-from app.security import obtener_usuario_actual
+from app.security import obtener_usuario_actual, requerir_admin
 from app.services.servicio_cliente import (
     listar_clientes as listar_clientes_servicio,
     crear_cliente as crear_cliente_servicio,
-    eliminar_cliente as eliminar_cliente_servicio,
+    desactivar_cliente as desactivar_cliente_servicio,
+    activar_cliente as activar_cliente_servicio,
 )
 
 
@@ -28,10 +29,19 @@ def crear_cliente(
     return crear_cliente_servicio(db, datos)
 
 
-@routercliente.delete("/{cliente_id}", status_code=204)
-def eliminar_cliente(
+@routercliente.patch("/{cliente_id}/desactivar", status_code=204)
+def desactivar_cliente(
     cliente_id: int,
     db: Session = Depends(obtener_bd),
     usuario=Depends(obtener_usuario_actual)
 ):
-    eliminar_cliente_servicio(db, cliente_id)
+    desactivar_cliente_servicio(db, cliente_id)
+
+
+@routercliente.patch("/{cliente_id}/activar", status_code=204)
+def activar_cliente(
+    cliente_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario=Depends(requerir_admin),
+):
+    activar_cliente_servicio(db, cliente_id)

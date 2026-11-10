@@ -7,7 +7,8 @@ from app.security import requerir_admin
 from app.services.servicio_categoria import (
     listar_categorias as listar_categorias_servicio,
     crear_categoria as crear_categoria_servicio,
-    eliminar_categoria as eliminar_categoria_servicio,
+    desactivar_categoria as desactivar_categoria_servicio,
+    activar_categoria as activar_categoria_servicio,
 )
 
 
@@ -28,10 +29,19 @@ def crear_categoria(
     return crear_categoria_servicio(db, datos)
 
 
-@routercategoria.delete("/{categoria_id}", status_code=204)
-def eliminar_categoria(
+@routercategoria.patch("/{categoria_id}/desactivar", status_code=204)
+def desactivar_categoria(
     categoria_id: int,
     db: Session = Depends(obtener_bd),
     usuario=Depends(requerir_admin)
 ):
-    eliminar_categoria_servicio(db, categoria_id)
+    desactivar_categoria_servicio(db, categoria_id)
+
+
+@routercategoria.patch("/{categoria_id}/activar", status_code=204)
+def activar_categoria(
+    categoria_id: int,
+    db: Session = Depends(obtener_bd),
+    usuario=Depends(requerir_admin),
+):
+    activar_categoria_servicio(db, categoria_id)

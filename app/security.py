@@ -19,6 +19,8 @@ esquema_oauth2 = OAuth2PasswordBearer(
 )
 
 def encriptar_contrasena(contrasena: str):
+    if len(contrasena.encode("utf-8")) > 72:
+        raise ValueError("La contraseña no puede superar los 72 bytes")
     return contexto_pwd.hash(contrasena)
 
 
@@ -37,7 +39,7 @@ def crear_token_acceso(datos: dict):
 
     return jwt.encode(
         a_codificar,
-        configuracion.CLAVE_SECRETA,
+        configuracion.CLAVESECRETA,
         algorithm=configuracion.ALGORITMO
     )
 
@@ -55,7 +57,7 @@ def obtener_usuario_actual(
     try:
         carga = jwt.decode(
             token,
-            configuracion.CLAVE_SECRETA,
+            configuracion.CLAVESECRETA,
             algorithms=[configuracion.ALGORITMO]
         )
 
@@ -67,7 +69,10 @@ def obtener_usuario_actual(
     except JWTError:
         raise excepcion_credenciales
 
-    usuario = db.query(Usuario).filter(Usuario.correo == correo).first()
+    usuario = db.query(Usuario).filter(
+        Usuario.correo == correo,
+        Usuario.activo.is_(True),
+    ).first()
 
     if usuario is None:
         raise excepcion_credenciales

@@ -17,8 +17,3 @@ def crear_producto(db: Session, producto: Producto):
     db.commit()
     db.refresh(producto)
     return producto
-
-
-def eliminar_producto(db: Session, producto: Producto):
-    db.delete(producto)
-    db.commit()
