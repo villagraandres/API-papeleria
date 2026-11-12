@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.database import motor, Base
 from app import models
@@ -32,6 +36,18 @@ app.include_router(routerclientes.routercliente)
 app.include_router(routerproveedor.routerproveedor)
 app.include_router(routerventa.routerventa)
 app.include_router(routercompras.routercompra)
+
+# Interfaz web (HTML/JS estático) en /ui
+app.mount(
+    "/ui",
+    StaticFiles(directory=Path(__file__).parent / "static", html=True),
+    name="ui",
+)
+
+
+@app.get("/ui", include_in_schema=False)
+def redirigir_ui():
+    return RedirectResponse("/ui/")
 
 
 @app.get("/")
