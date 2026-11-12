@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from app.database import obtener_bd
 from app.schemas.infoventas import VentaCrear, VentaRespuesta
 from app.services.servicio_venta import (
-    listar_ventas as listar_ventas_servicio,
     obtener_venta as obtener_venta_servicio,
     crear_venta as crear_venta_servicio,
     cancelar_venta as cancelar_venta_servicio,
@@ -23,16 +22,6 @@ def listar_ventas(
     fecha_fin: datetime | None = None,
     db: Session = Depends(obtener_bd),
     usuario=Depends(obtener_usuario_actual)
-):
-    return listar_ventas_por_fecha_servicio(db, fecha_inicio, fecha_fin)
-
-
-@routerventa.get("/reporte", response_model=list[VentaRespuesta])
-def reporte_ventas(
-    fecha_inicio: datetime | None = None,
-    fecha_fin: datetime | None = None,
-    db: Session = Depends(obtener_bd),
-    usuario=Depends(obtener_usuario_actual),
 ):
     return listar_ventas_por_fecha_servicio(db, fecha_inicio, fecha_fin)
 

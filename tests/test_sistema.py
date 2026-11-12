@@ -308,9 +308,9 @@ def test_compras_ventas_inventario_cancelacion_y_reportes(cliente: TestClient):
     venta_id = venta.json()["id"]
     assert cliente.get(f"/productos/{producto_id}").json()["stock"] == 13
 
-    reporte = cliente.get("/ventas/reporte", headers=admin_headers)
-    assert reporte.status_code == 200
-    assert any(item["id"] == venta_id for item in reporte.json())
+    ventas = cliente.get("/ventas/", headers=admin_headers)
+    assert ventas.status_code == 200
+    assert any(item["id"] == venta_id for item in ventas.json())
 
     compra_obtenida = cliente.get(
         f"/compras/{compra_id}",

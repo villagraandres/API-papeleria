@@ -79,7 +79,7 @@ Las rutas y sus parámetros completos están disponibles en `/docs`. Los grupos 
 | `/clientes` | Gestión de clientes. |
 | `/proveedores` | Gestión de proveedores. |
 | `/compras` | Registro, consulta y cancelación de compras. |
-| `/ventas` | Registro, consulta, cancelación y reporte de ventas. |
+| `/ventas` | Registro, consulta (con filtro por fechas) y cancelación de ventas. |
 
 El inicio de sesión devuelve un token de acceso. Para las rutas protegidas, envíalo en el encabezado:
 
