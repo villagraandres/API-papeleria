@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>Papelería PIA | Administración</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Papelería PIA, inicio">
+        <span class="brand-mark">P</span>
+        <span><strong>Papelería PIA</strong><small>Panel de administración</small></span>
+      </a>
+      <div class="api-setting">
+        <label for="api-url">API</label>
+        <input id="api-url" type="url" value="http://127.0.0.1:8000" aria-label="Dirección base de la API">
+        <button id="save-api" class="button button-light" type="button">Conectar</button>
+      </div>
+      <div id="account" class="account" hidden>
+        <span id="account-name"></span>
+        <button id="logout" class="button button-light" type="button">Cerrar sesión</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <section id="auth-panel" class="auth-layout">
+        <div class="welcome-card">
+          <span class="eyebrow">Sistema de gestión</span>
+          <h1>Todo tu negocio,<br>en un solo lugar.</h1>
+          <p>Administra el catálogo, registra ventas y compras, y mantén la información de tu papelería al día.</p>
+          <div class="welcome-stat"><span class="welcome-icon">✓</span> Inventario y movimientos conectados a tu API</div>
+        </div>
+        <div class="auth-card">
+          <div class="auth-heading">
+            <span class="eyebrow">Bienvenido</span>
+            <h2>Inicia sesión</h2>
+            <p>Usa tu cuenta de Papelería PIA para continuar.</p>
+          </div>
+          <form id="login-form" class="form-grid">
+            <label class="field field-wide">Correo electrónico
+              <input name="correo" type="email" autocomplete="username" placeholder="tu@correo.com" required>
+            </label>
+            <label class="field field-wide">Contraseña
+              <input name="contrasena" type="password" autocomplete="current-password" required>
+            </label>
+            <button class="button button-primary field-wide" type="submit">Entrar al sistema</button>
+          </form>
+          <details class="register-details">
+            <summary>¿Aún no tienes cuenta? Regístrate</summary>
+            <form id="register-form" class="form-grid register-form">
+              <label class="field field-wide">Nombre
+                <input name="nombre" autocomplete="name" required>
+              </label>
+              <label class="field field-wide">Correo electrónico
+                <input name="correo" type="email" autocomplete="email" required>
+              </label>
+              <label class="field field-wide">Contraseña <span class="hint">(mínimo 8 caracteres)</span>
+                <input name="contrasena" type="password" minlength="8" autocomplete="new-password" required>
+              </label>
+              <button class="button button-secondary field-wide" type="submit">Crear cuenta de empleado</button>
+            </form>
+          </details>
+          <p class="auth-footnote">La cuenta pública se registra con permisos de empleado. Las funciones administrativas requieren una cuenta admin.</p>
+        </div>
+      </section>
+
+      <section id="workspace" class="workspace" hidden>
+        <aside class="sidebar">
+          <span class="nav-label">PRINCIPAL</span>
+          <nav id="navigation" aria-label="Secciones">
+            <button class="nav-item active" data-view="dashboard"><span>▦</span> Resumen</button>
+            <button class="nav-item" data-view="productos"><span>▤</span> Productos</button>
+            <button class="nav-item" data-view="categorias"><span>◫</span> Categorías</button>
+            <button class="nav-item" data-view="clientes"><span>♙</span> Clientes</button>
+            <button class="nav-item" data-view="proveedores"><span>♧</span> Proveedores</button>
+          </nav>
+          <span class="nav-label nav-label-spaced">OPERACIONES</span>
+          <nav aria-label="Operaciones">
+            <button class="nav-item" data-view="ventas"><span>↗</span> Ventas</button>
+            <button class="nav-item admin-only" data-view="compras"><span>↙</span> Compras</button>
+            <button class="nav-item admin-only" data-view="usuarios"><span>♧</span> Usuarios</button>
+          </nav>
+          <div class="sidebar-note"><strong>API conectada</strong><span>Los cambios se guardan en el sistema.</span></div>
+        </aside>
+
+        <div class="content">
+          <section class="view active" id="view-dashboard">
+            <div class="page-heading">
+              <div><span class="eyebrow">VISTA GENERAL</span><h1>Resumen</h1><p>Un vistazo rápido a tu papelería.</p></div>
+              <button class="button button-light" id="refresh-dashboard" type="button">Actualizar datos</button>
+            </div>
+            <div class="summary-grid" id="summary-cards"></div>
+            <div class="panel dashboard-panel">
+              <div class="panel-heading"><div><h2>Accesos rápidos</h2><p>Elige una sección para comenzar.</p></div></div>
+              <div class="quick-links">
+                <button class="quick-link" data-view="productos"><span class="quick-icon blue">▤</span><span><strong>Catálogo</strong><small>Consulta y actualiza productos</small></span><b>→</b></button>
+                <button class="quick-link" data-view="ventas"><span class="quick-icon green">↗</span><span><strong>Registrar una venta</strong><small>Registra artículos vendidos</small></span><b>→</b></button>
+                <button class="quick-link admin-only" data-view="compras"><span class="quick-icon orange">↙</span><span><strong>Registrar una compra</strong><small>Actualiza el inventario</small></span><b>→</b></button>
+              </div>
+            </div>
+          </section>
+          <section class="view" id="view-productos"></section>
+          <section class="view" id="view-categorias"></section>
+          <section class="view" id="view-clientes"></section>
+          <section class="view" id="view-proveedores"></section>
+          <section class="view" id="view-ventas"></section>
+          <section class="view" id="view-compras"></section>
+          <section class="view" id="view-usuarios"></section>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">Papelería PIA <span>·</span> Administración de inventario y ventas</footer>
+  </body>
+</html>
